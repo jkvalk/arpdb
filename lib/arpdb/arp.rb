@@ -12,10 +12,10 @@ module Arpdb
     public
 
     # * +hostlist+ - Array of hostnames (strings) who's ARP tables to fetch
-    def initialize(hostlist)
+    def initialize(hostlist, community = 'public')
       @db = []
       hostlist.each do |host|
-        SNMP::Manager.open(Host: host, Community: 'srxread') do |manager|
+        SNMP::Manager.open(host: host, community: community) do |manager|
           manager.walk(%w(1.3.6.1.2.1.4.22.1.2 1.3.6.1.2.1.4.22.1.3)) do |row|
             mac = row[0].value.unpack('H*')[0]
             ip = row[1].value.to_s
