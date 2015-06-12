@@ -1,0 +1,3 @@
+module Arpdb
+  VERSION = "0.1.1"
+end
