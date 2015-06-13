@@ -13,9 +13,15 @@ module Arpdb
 
     # * +hostlist+ - Array of hostnames (strings) who's ARP tables to fetch
     def initialize(hostlist, community = 'public')
+      @hostlist = hostlist
+      @community = community
+      refresh
+    end
+
+    def refresh
       @db = []
-      hostlist.each do |host|
-        SNMP::Manager.open(host: host, community: community) do |manager|
+      @hostlist.each do |host|
+        SNMP::Manager.open(host: host, community: @community) do |manager|
           manager.walk(%w(1.3.6.1.2.1.4.22.1.2 1.3.6.1.2.1.4.22.1.3)) do |row|
             mac = row[0].value.unpack('H*')[0]
             ip = row[1].value.to_s
@@ -25,18 +31,18 @@ module Arpdb
       end
     end
 
-    # * +mac+ - MAC address. String, hex, lowercase, no byte separators.
+    # * +mac+ - MAC address. String.
     #    mac_to_ip("a7fea790ffa9")
     def mac_to_ip(mac)
       db.each do |line|
-        if line[:mac].eql?(mac)
+        if line[:mac].eql?(mac.downcase.gsub(':',''))
           return line[:ip]
         end
       end
       ''
     end
 
-    # * +ip+ - IP address. String, decimal.
+    # * +ip+ - IP address. String, decimal notation.
     #    ip_to_mac("10.0.0.1")
     def ip_to_mac(ip)
       db.each do |line|
