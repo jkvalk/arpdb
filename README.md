@@ -20,15 +20,15 @@ Or install it yourself as:
 
 ## Usage
 ```ruby
-    require 'arpdb'
+require 'arpdb'
 
-    routers = %w(192.168.1.1 10.1.1.1)
-    snmp_community = 'secret_community'
+routers = %w(192.168.1.1 10.1.1.1)
+snmp_community = 'secret_community'
 
-    adb = Arpdb::Arp.new(routers, snmp_community)
+adb = Arpdb::Arp.new(routers, snmp_community)
 
-    puts adb.mac_to_ip 'aa:bb:cc:dd:ee:ff'
-    puts adb.ip_to_mac '192.168.1.100'
+puts adb.mac_to_ip 'aa:bb:cc:dd:ee:ff'
+puts adb.ip_to_mac '192.168.1.100'
 ```
 
 ## Development
