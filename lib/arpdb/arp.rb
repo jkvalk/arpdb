@@ -7,9 +7,7 @@ module Arpdb
 
   class Arp
 
-    private
     attr_accessor :db
-    public
 
     # * +hostlist+ - Array of hostnames (strings) who's ARP tables to fetch
     def initialize(hostlist, community = 'public')
@@ -29,6 +27,7 @@ module Arpdb
           end
         end
       end
+      self
     end
 
     # * +mac+ - MAC address. String.
