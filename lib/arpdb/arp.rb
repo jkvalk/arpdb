@@ -13,6 +13,10 @@ module Arpdb
     def initialize(hostlist, community = 'public')
       @hostlist = hostlist
       @community = community
+    end
+
+    # Just an alias for refresh()
+    def scan
       refresh
     end
 
