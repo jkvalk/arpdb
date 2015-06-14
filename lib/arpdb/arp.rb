@@ -21,7 +21,7 @@ module Arpdb
     end
 
     def refresh
-      @db = []
+      @db = Array.new
       @hostlist.each do |host|
         SNMP::Manager.open(host: host, community: @community) do |manager|
           manager.walk(%w(1.3.6.1.2.1.4.22.1.2 1.3.6.1.2.1.4.22.1.3)) do |row|

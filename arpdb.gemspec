@@ -10,16 +10,8 @@ Gem::Specification.new do |spec|
   spec.email         = ["jkvalk@mail.ru"]
 
   spec.summary       = %q{Arpdb is a Ruby gem for querying SNMP-enabled network devices for their ARP database.}
-  spec.description   = ""
-  spec.homepage      = ""
-
-  # Prevent pushing this gem to RubyGems.org by setting 'allowed_push_host', or
-  # delete this section to allow pushing this gem to any host.
-  #if spec.respond_to?(:metadata)
-  #  spec.metadata['allowed_push_host'] = ""
-  #else
-  #  raise "RubyGems 2.0 or newer is required to protect against public gem pushes."
-  #end
+  spec.description   = "This is VERY raw, version 1.0.0 is expected to be first usable implementation."
+  spec.homepage      = "https://github.com/jkvalk/arpdb"
 
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
   spec.bindir        = "exe"
