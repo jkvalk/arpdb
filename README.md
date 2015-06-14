@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.org/jkvalk/arpdb.svg?branch=master)](https://travis-ci.org/jkvalk/arpdb)
 [![Gem Version](https://badge.fury.io/rb/arpdb.svg)](http://badge.fury.io/rb/arpdb)
+[![Coverage Status](https://coveralls.io/repos/jkvalk/arpdb/badge.svg?branch=master)](https://coveralls.io/r/jkvalk/arpdb?branch=master)
 
 # Arpdb
 
