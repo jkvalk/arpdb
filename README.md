@@ -19,7 +19,7 @@ Or install it yourself as:
     $ gem install arpdb
 
 ## Usage
-
+```ruby
     require 'arpdb'
 
     routers = %w(192.168.1.1 10.1.1.1)
@@ -29,7 +29,7 @@ Or install it yourself as:
 
     puts adb.mac_to_ip 'aa:bb:cc:dd:ee:ff'
     puts adb.ip_to_mac '192.168.1.100'
-
+```
 
 ## Development
 
