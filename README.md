@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/jkvalk/arpdb.svg?branch=master)](https://travis-ci.org/jkvalk/arpdb)
+
 # Arpdb
 
 Arpdb is a Ruby gem for querying SNMP-enabled network devices for their ARP database. 
