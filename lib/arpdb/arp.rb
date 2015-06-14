@@ -7,6 +7,9 @@ module Arpdb
 
   class Arp
 
+    class ArpdbError < StandardError
+    end
+
     attr_accessor :db
 
     # * +hostlist+ - Array of hostnames (strings) who's ARP tables to fetch
@@ -23,11 +26,13 @@ module Arpdb
     def refresh
       @db = Array.new
       @hostlist.each do |host|
-        SNMP::Manager.open(host: host, community: @community) do |manager|
-          manager.walk(%w(1.3.6.1.2.1.4.22.1.2 1.3.6.1.2.1.4.22.1.3)) do |row|
-            mac = row[0].value.unpack('H*')[0]
-            ip = row[1].value.to_s
-            @db << {mac: mac, ip: ip, host: host}
+        handle_exceptions do
+          SNMP::Manager.open(host: host, community: @community) do |manager|
+            manager.walk(%w(1.3.6.1.2.1.4.22.1.2 1.3.6.1.2.1.4.22.1.3)) do |row|
+              mac = row[0].value.unpack('H*')[0]
+              ip = row[1].value.to_s
+              @db << {mac: mac, ip: ip, host: host}
+            end
           end
         end
       end
@@ -38,7 +43,7 @@ module Arpdb
     #    mac_to_ip("a7fea790ffa9")
     def mac_to_ip(mac)
       db.each do |line|
-        if line[:mac].eql?(mac.downcase.gsub(':',''))
+        if line[:mac].eql?(mac.downcase.gsub(':', ''))
           return line[:ip]
         end
       end
@@ -78,6 +83,16 @@ module Arpdb
         end
       end
       ''
+    end
+
+    private
+
+    def handle_exceptions
+      begin
+        yield
+      rescue => e
+        raise ArpdbError, "Exception in Arpdb::Arp: #{e.to_s}"
+      end
     end
 
   end
