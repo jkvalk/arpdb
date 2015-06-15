@@ -3,13 +3,11 @@
 require "bundler/setup"
 require "arpdb"
 
-# You can add fixtures and/or initialization code here to make experimenting
-# with your gem easier. You can also use a different console, if you like.
-
-# (If you use this, don't forget to add pry to your Gemfile!)
+# reload a gem
+def reload(require_regex)
+  $".grep(/^#{require_regex}/).each {|e| load(e) }
+end
 
 require "pry"
 Pry.start
 
-#require "irb"
-#IRB.start

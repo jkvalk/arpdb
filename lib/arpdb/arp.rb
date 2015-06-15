@@ -16,22 +16,26 @@ module Arpdb
     def initialize(hostlist, community = 'public')
       @hostlist = hostlist
       @community = community
+      @db = Array.new
     end
 
-    # Just an alias for refresh()
-    def scan
+    # Just an alias for scan
+    def refresh
       refresh
     end
 
-    def refresh
-      @db = Array.new
+    def scan
       @hostlist.each do |host|
         handle_exceptions do
-          SNMP::Manager.open(host: host, community: @community) do |manager|
+          SNMP::Manager.open(host: host, community: @community, mib_modules: [], retries: 1) do |manager|
+
+            location = String.new
+            manager.get('1.3.6.1.2.1.1.6.0').each_varbind { |vb| location = vb.value }
+
             manager.walk(%w(1.3.6.1.2.1.4.22.1.2 1.3.6.1.2.1.4.22.1.3)) do |row|
-              mac = row[0].value.unpack('H*')[0]
+              mac = row[0].value.unpack('H*').first
               ip = row[1].value.to_s
-              @db << {mac: mac, ip: ip, host: host}
+              @db << {mac: mac, ip: ip, host: host, location: location}
             end
           end
         end
@@ -61,25 +65,25 @@ module Arpdb
       ''
     end
 
-    # Returns the host that has given MAC in it's ARP table
+    # Returns the syslocation that has given MAC in it's ARP table
     # * +mac+ - MAC address. String, hex, lowercase, no byte separators.
     #    locate_mac("a7fea790ffa9")
     def locate_mac(mac)
       db.each do |line|
         if line[:mac].eql?(mac)
-          return line[:host]
+          return line[:location]
         end
       end
       ''
     end
 
-    # Returns the host that has given IP in it's ARP table
+    # Returns the syslocation that has given IP in it's ARP table
     # * +ip+ - IP address. String, decimal.
     #    locate_mac("10.0.0.1")
     def locate_ip(ip)
       db.each do |line|
         if line[:ip].eql?(ip)
-          return line[:host]
+          return line[:location]
         end
       end
       ''
