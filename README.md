@@ -30,7 +30,7 @@ include Arpdb
 devices = %w(10.40.5.1 10.43.5.1)
 community = 'public'
 
-a = Arp.new(devices, 'public')
+a = Arp.new(devices, community)
 
 a.scan
 
