@@ -30,17 +30,17 @@ include Arpdb
 devices = %w(10.40.5.1 10.43.5.1)
 community = 'public'
 
-a = Arp.new(devices, community)
+adb = Arp.new(devices, community)
 
-a.scan
+adb.scan
 
-puts a.mac_to_ip "7a70dec81b02"
-puts a.ip_to_mac "172.27.50.2"
+puts adb.mac_to_ip "7a70dec81b02"
+puts adb.ip_to_mac "172.27.50.2"
 
-puts a.locate_mac "7a70dec81b02"
-puts a.locate_ip "172.27.50.2"
+puts adb.locate_mac "7a70dec81b02"
+puts adb.locate_ip "172.27.50.2"
 
-a.refresh
+adb.refresh
 
 ```
 
