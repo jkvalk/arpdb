@@ -70,7 +70,7 @@ module Arpdb
     #    locate_mac("a7fea790ffa9")
     def locate_mac(mac)
       db.each do |line|
-        if line[:mac].eql?(mac)
+        if line[:mac].eql?(mac.downcase.gsub(':', ''))
           return line[:location]
         end
       end
