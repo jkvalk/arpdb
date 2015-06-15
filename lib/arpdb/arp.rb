@@ -21,7 +21,7 @@ module Arpdb
 
     # Just an alias for scan
     def refresh
-      refresh
+      scan
     end
 
     def scan
