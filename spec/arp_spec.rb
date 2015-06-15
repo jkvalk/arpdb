@@ -4,6 +4,6 @@ describe 'Arp' do
 
   it 'should initialize' do
 
-    true.should == true
+    expect(true).to eq(true)
   end
 end
