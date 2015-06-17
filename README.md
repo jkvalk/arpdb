@@ -27,12 +27,10 @@ Or install it yourself as:
 require 'arpdb'
 include Arpdb
 
-devices = %w(10.40.5.1 10.43.5.1)
+hosts = %w(10.40.5.1 10.43.5.1)
 community = 'public'
 
-adb = Arp.new(devices, community)
-
-adb.scan
+adb = Arp.new(hosts.collect { |host| SNMPTransport.new(host, community) }).scan
 
 puts adb.mac_to_ip "7a70dec81b02"
 puts adb.ip_to_mac "172.27.50.2"
@@ -40,7 +38,7 @@ puts adb.ip_to_mac "172.27.50.2"
 puts adb.locate_mac "7a70dec81b02"
 puts adb.locate_ip "172.27.50.2"
 
-adb.refresh
+adb.rescan
 
 ```
 

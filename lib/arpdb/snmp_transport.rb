@@ -2,9 +2,10 @@ require 'snmp'
 
 class SNMPTransport
 
-  attr_accessor :manager
+  attr_accessor :manager, :host
 
   def initialize(host, community = 'public')
+    @host = host
     @manager = SNMP::Manager.new(host: host, community: community, mib_modules: [], retries: 1)
   end
 
@@ -22,10 +23,6 @@ class SNMPTransport
 
   def get(oid)
     manager.get(oid).each_varbind { |vb| return decode_value(vb) }
-  end
-
-  def close
-    manager.close
   end
 
   private
