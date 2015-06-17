@@ -2,6 +2,7 @@
 
 require "bundler/setup"
 require "arpdb"
+include Arpdb
 
 # reload a gem
 def reload(require_regex)

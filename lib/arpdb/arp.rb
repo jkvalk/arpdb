@@ -1,10 +1,7 @@
-require 'snmp'
-require 'ap'
-
-# Class to fetch ARP tables from Juniper firewalls, maintain them in
-# memory and perform search operations on the cached data.
 module Arpdb
 
+  # Class to fetch ARP tables from Juniper firewalls, maintain them in
+  # memory and perform search operations on the cached data.
   class Arp
 
     class ArpdbError < StandardError
@@ -12,81 +9,74 @@ module Arpdb
 
     attr_accessor :db
 
-    # * +hostlist+ - Array of hostnames (strings) who's ARP tables to fetch
     def initialize(hostlist, community = 'public')
       @hostlist = hostlist
       @community = community
       @db = Array.new
     end
 
-    # Just an alias for scan
-    def refresh
+    def rescan
       scan
     end
 
     def scan
       @hostlist.each do |host|
         handle_exceptions do
-          SNMP::Manager.open(host: host, community: @community, mib_modules: [], retries: 1) do |manager|
+          st = SNMPTransport.new(host, @community)
+          location = st.get('1.3.6.1.2.1.1.6.0')
 
-            location = String.new
-            manager.get('1.3.6.1.2.1.1.6.0').each_varbind { |vb| location = vb.value }
-
-            manager.walk(%w(1.3.6.1.2.1.4.22.1.2 1.3.6.1.2.1.4.22.1.3)) do |row|
-              mac = row[0].value.unpack('H*').first
-              ip = row[1].value.to_s
-              @db << {mac: mac, ip: ip, host: host, location: location}
-            end
+          st.walk(%w(1.3.6.1.2.1.4.22.1.2 1.3.6.1.2.1.4.22.1.3)).each do |row|
+            @db << {mac: row.first, ip: row.last, host: host, location: location}
           end
+          st.close
         end
+
       end
       self
     end
 
-    # * +mac+ - MAC address. String.
-    #    mac_to_ip("a7fea790ffa9")
     def mac_to_ip(mac)
+      return '' if mac.nil?
+
       db.each do |line|
         if line[:mac].eql?(mac.downcase.gsub(':', ''))
           return line[:ip]
         end
       end
-      ''
+      String.new
     end
 
-    # * +ip+ - IP address. String, decimal notation.
-    #    ip_to_mac("10.0.0.1")
     def ip_to_mac(ip)
+      return '' if ip.nil?
+
       db.each do |line|
         if line[:ip].eql?(ip)
           return line[:mac]
         end
       end
-      ''
+      String.new
     end
 
-    # Returns the syslocation that has given MAC in it's ARP table
-    # * +mac+ - MAC address. String, hex, lowercase, no byte separators.
-    #    locate_mac("a7fea790ffa9")
     def locate_mac(mac)
+      return '' if mac.nil?
+
       db.each do |line|
         if line[:mac].eql?(mac.downcase.gsub(':', ''))
           return line[:location]
         end
       end
-      ''
+      String.new
     end
 
-    # Returns the syslocation that has given IP in it's ARP table
-    # * +ip+ - IP address. String, decimal.
-    #    locate_mac("10.0.0.1")
     def locate_ip(ip)
+      return '' if ip.nil?
+
       db.each do |line|
         if line[:ip].eql?(ip)
           return line[:location]
         end
       end
-      ''
+      String.new
     end
 
     private
@@ -95,7 +85,7 @@ module Arpdb
       begin
         yield
       rescue => e
-        raise ArpdbError, "Exception in Arpdb::Arp: #{e.to_s}"
+        raise ArpdbError, "Exception in Arpdb::Arp: #{e}"
       end
     end
 
