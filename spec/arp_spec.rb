@@ -44,9 +44,9 @@ describe 'Arp' do
   end
 
   it 'should have a db' do
-    expect(Arp.new(@snmp_transports_many).db).to eq([])
+    expect(Arp.new(@snmp_transports_many).db).to be_empty
     expect(Arp.new(@snmp_transports_many).scan.db).to be_an_instance_of(Array)
-    expect(Arp.new(@snmp_transports_many).scan.db).to_not eq([])
+    expect(Arp.new(@snmp_transports_many).scan.db).to_not be_empty
   end
 
   it  'should have snmp_transports' do
