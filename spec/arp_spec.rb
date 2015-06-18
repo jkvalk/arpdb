@@ -42,4 +42,21 @@ describe 'Arp' do
   it 'should rescan' do
     expect(Arp.new(@snmp_transports_many).scan.rescan).to be_an_instance_of(Arp)
   end
+
+  it 'should have a db' do
+    expect(Arp.new(@snmp_transports_many).db).to eq([])
+    expect(Arp.new(@snmp_transports_many).scan.db).to be_an_instance_of(Array)
+    expect(Arp.new(@snmp_transports_many).scan.db).to_not eq([])
+  end
+
+  it  'should have snmp_transports' do
+    adb = Arp.new(@snmp_transports_many)
+
+    expect(adb.snmp_transports).to be_an_instance_of(Array)
+
+    Arp.new(@snmp_transports_many).snmp_transports.each do |st|
+      expect(st).to be_an_instance_of(RSpec::Mocks::InstanceVerifyingDouble)
+    end
+  end
+
 end
