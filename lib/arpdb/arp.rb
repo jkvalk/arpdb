@@ -40,7 +40,7 @@ module Arpdb
       return '' if mac.nil?
 
       db.each do |line|
-        if line[:mac].eql?(mac.downcase.gsub(':', ''))
+        if line[:mac].eql?(mac_flatten(mac))
           return line[:ip]
         end
       end
@@ -62,7 +62,7 @@ module Arpdb
       return '' if mac.nil?
 
       db.each do |line|
-        if line[:mac].eql?(mac.downcase.gsub(':', ''))
+        if line[:mac].eql?(mac_flatten(mac))
           return line[:location]
         end
       end
@@ -88,6 +88,13 @@ module Arpdb
       rescue => e
         raise ArpdbError, "Exception in Arpdb::Arp: #{e}"
       end
+    end
+
+
+    private
+
+    def mac_flatten(mac)
+      mac.downcase.gsub(':', '')
     end
 
   end

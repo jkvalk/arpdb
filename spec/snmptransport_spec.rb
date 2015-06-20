@@ -8,7 +8,6 @@ describe 'SNMPTransport' do
     allow(SNMP::Manager).to receive(:new).and_return(@fake_manager)
 
     @fake_varbind = double(SNMP::VarBind, name: '1.2.3.4.5.6.7.8.9', value: 'MyLocation')
-    #allow(@fake_varbind).to receive(:value).and_return('')
 
     @fake_varbind_list = double(SNMP::VarBindList)
     allow(@fake_varbind_list).to receive(:each_varbind).and_yield(@fake_varbind)
