@@ -37,47 +37,19 @@ module Arpdb
     end
 
     def mac_to_ip(mac)
-      return '' if mac.nil?
-
-      db.each do |line|
-        if line[:mac].eql?(mac_flatten(mac))
-          return line[:ip]
-        end
-      end
-      String.new
+      dblookup(:mac, mac_flatten(mac), :ip)
     end
 
     def ip_to_mac(ip)
-      return '' if ip.nil?
-
-      db.each do |line|
-        if line[:ip].eql?(ip)
-          return line[:mac]
-        end
-      end
-      String.new
+      dblookup(:ip, ip, :mac)
     end
 
     def locate_mac(mac)
-      return '' if mac.nil?
-
-      db.each do |line|
-        if line[:mac].eql?(mac_flatten(mac))
-          return line[:location]
-        end
-      end
-      String.new
+      dblookup(:mac, mac_flatten(mac), :location)
     end
 
     def locate_ip(ip)
-      return '' if ip.nil?
-
-      db.each do |line|
-        if line[:ip].eql?(ip)
-          return line[:location]
-        end
-      end
-      String.new
+      dblookup(:ip, ip, :location)
     end
 
     private
@@ -90,8 +62,12 @@ module Arpdb
       end
     end
 
+    def dblookup(key, match_value, return_key)
+      return '' if match_value.nil?
 
-    private
+      line = db.find { |line| line[key].eql?(match_value) }
+      line ? line[return_key] : ''
+    end
 
     def mac_flatten(mac)
       mac.downcase.gsub(':', '')
