@@ -7,7 +7,7 @@ describe 'SNMPTransport' do
     @fake_manager = double(SNMP::Manager)
     allow(SNMP::Manager).to receive(:new).and_return(@fake_manager)
 
-    @fake_varbind = double(SNMP::VarBind, name: '1.2.3.4.5.6.7.8.9', value: 'MyLocation')
+    @fake_varbind = double(SNMP::VarBind, name: '1.2.3.4', value: 'MyLocation')
 
     @fake_varbind_list = double(SNMP::VarBindList)
     allow(@fake_varbind_list).to receive(:each_varbind).and_yield(@fake_varbind)
@@ -29,6 +29,10 @@ describe 'SNMPTransport' do
   end
 
   it 'should walk' do
+    
+    @fake_varbind = double(SNMP::VarBind, name: '1.3.6.1.2.1.4.22.1.2', value: 'MyLocation')
     SNMPTransport.new('host', 'comm').walk(%w(1.3.6.1.2.1.4.22.1.2 1.3.6.1.2.1.4.22.1.3))
   end
+
+
 end

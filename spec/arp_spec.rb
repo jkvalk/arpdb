@@ -59,4 +59,10 @@ describe 'Arp' do
     end
   end
 
+  it 'should raise' do
+    allow(@snmp_transport).to receive(:get).and_raise(StandardError)
+    expect{Arp.new(@snmp_transports_many).scan}.to raise_error(Arp::ArpdbError)
+
+  end
+
 end
