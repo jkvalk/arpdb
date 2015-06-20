@@ -70,6 +70,7 @@ module Arpdb
     end
 
     def mac_flatten(mac)
+      return '' if mac.nil?
       mac.downcase.gsub(':', '')
     end
 
