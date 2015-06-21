@@ -14,7 +14,7 @@ module Arpdb
     # Arpdb::SNMPTransport or array of those. This way we can easily pass
     # mocked SNMPTransport here for off-the-hook testing.
     def initialize(snmp_transports)
-      snmp_transports.is_a?(Array) ? @snmp_transports = snmp_transports : @snmp_transports = [snmp_transports]
+      @snmp_transports = Array(snmp_transports)
       @db = Array.new
     end
 
@@ -23,12 +23,14 @@ module Arpdb
     end
 
     def scan
+      sys_location = '1.3.6.1.2.1.1.6.0'
+      ip_net_to_media_phys_address = '1.3.6.1.2.1.4.22.1.2'
+      ip_net_to_media_net_address = '1.3.6.1.2.1.4.22.1.3'
+      @db = Array.new
       handle_exceptions do
         snmp_transports.each do |st|
-          location = st.get('1.3.6.1.2.1.1.6.0')
-
-          st.walk(%w(1.3.6.1.2.1.4.22.1.2 1.3.6.1.2.1.4.22.1.3)).each do |row|
-            @db << {mac: row.first, ip: row.last, host: st.host, location: location}
+          st.walk([ip_net_to_media_phys_address, ip_net_to_media_net_address]).each do |mac, ip|
+            @db << {mac: mac, ip: ip, host: st.host, location: st.get(sys_location)}
           end
         end
       end
