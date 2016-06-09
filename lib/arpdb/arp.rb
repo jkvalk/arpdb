@@ -28,13 +28,21 @@ module Arpdb
       ip_net_to_media_net_address = '1.3.6.1.2.1.4.22.1.3'
       @db = Array.new
       handle_exceptions do
+        dirty = false
         snmp_transports.each do |st|
-          st.walk([ip_net_to_media_phys_address, ip_net_to_media_net_address]).each do |mac, ip|
-            @db << {mac: mac, ip: ip, host: st.host, location: st.get(sys_location)}
+          begin
+            st.walk([ip_net_to_media_phys_address, ip_net_to_media_net_address]).each do |mac, ip|
+              @db << {mac: mac, ip: ip, host: st.host, location: st.get(sys_location)}
+            end
+          rescue => e
+            dirty = true
+            msgs ||= []
+            msgs << "SNMPTransport error while scanning #{st.host}; moving to next host (if any)"
+            next
           end
         end
+        raise msgs.join("; ") if dirty
       end
-
       self
     end
 
